@@ -1,0 +1,79 @@
+name: ai_assistant_bot
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  appwrite:
+    path: ./appwrite
+
+  # For using Lottie Animations
+  lottie: ^2.7.0
+
+  # For Hive Database
+  hive: ^4.0.0-dev.2
+  isar_flutter_libs: ^4.0.0-dev.13
+
+  path_provider: ^2.0.0
+
+
+
+  # For State Management
+  get: ^4.6.6
+
+  # For Custom Animation
+  flutter_animate: ^4.2.0+1
+
+  animated_text_kit: ^4.2.2
+
+  # For API Call
+  http: ^1.1.2
+
+  # For AI Image Generation
+  dart_openai: ^5.0.0
+  cached_network_image: ^3.3.0
+
+  # For Google Language Translate
+  translator_plus: ^1.0.1
+
+  # For Saving Image to Gallery
+  gallery_saver_updated: ^3.0.0
+
+  # For Sharing Image
+  share_plus: ^7.2.1
+
+  # Facebook Ads
+  easy_audience_network: ^0.0.6
+
+
+  cupertino_icons: ^1.0.2
+
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+  # For Changing App Icon
+  icons_launcher: ^2.1.4
+
+flutter:
+  uses-material-design: true
+
+
+
+  assets:
+    - assets/images/
+    - assets/lottie/
