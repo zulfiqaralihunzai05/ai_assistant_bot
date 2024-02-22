@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -62,7 +60,7 @@ class _LanguageSheetState extends State<LanguageSheet> {
                     return InkWell(
                       onTap: () {
                         widget.s.value = list[i];
-                        log(list[i]);
+                        //log(list[i]);
                         Get.back();
                       },
                       child: Padding(

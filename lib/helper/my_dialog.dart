@@ -27,4 +27,8 @@ class MyDialog {
   static void showLoadingDialog() {
     Get.dialog(const Center(child: CustomLoading()));
   }
+
+  static showProgress() {
+    Get.dialog(const Center(child: CircularProgressIndicator(strokeWidth: 2)));
+  }
 }

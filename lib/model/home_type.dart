@@ -1,9 +1,8 @@
+import 'package:ai_assistant_bot/helper/ad_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-
 import '../screen/feature/background_remove.dart';
-import '../screen/feature/chatbot_feature.dart';
+import '../screen/feature/chat_bot_feature.dart';
 import '../screen/feature/image_feature.dart';
 import '../screen/feature/translator_feature.dart';
 
@@ -20,10 +19,10 @@ extension MyHomeType on HomeType {
 
   //lottie
   String get lottie => switch (this) {
-        HomeType.aiChatBot => 'ai_hand_waving.json',
+        HomeType.aiChatBot => 'chat_bot.json',
         HomeType.aiImage => 'ai_play.json',
-        HomeType.aiTranslator => 'ai_ask_me.json',
-        HomeType.aiBGRemove => 'ai_ask_me.json',
+        HomeType.aiTranslator => 'language_translator.json',
+        HomeType.aiBGRemove => 'background_remover.json',
       };
 
   //for alignment
@@ -44,9 +43,17 @@ extension MyHomeType on HomeType {
 
   //for navigation
   VoidCallback get onTap => switch (this) {
-        HomeType.aiChatBot => () => Get.to(() => const ChatBotFeature()),
-        HomeType.aiImage => () => Get.to(() => const ImageFeature()),
-        HomeType.aiTranslator => () => Get.to(() => const TranslatorFeature()),
-        HomeType.aiBGRemove => () => Get.to(() => const BackgroundRemove()),
+        HomeType.aiChatBot => () => AdHelper.showLoadInterstitialAd(
+              onComplete: () => Get.to(() => const ChatBotFeature()),
+            ),
+        HomeType.aiImage => () => AdHelper.showLoadInterstitialAd(
+              onComplete: () => Get.to(() => const ImageFeature()),
+            ),
+        HomeType.aiTranslator => () => AdHelper.showLoadInterstitialAd(
+              onComplete: () => Get.to(() => const TranslatorFeature()),
+            ),
+        HomeType.aiBGRemove => () => AdHelper.showLoadInterstitialAd(
+              onComplete: () => Get.to(() => const BackgroundRemove()),
+            ),
       };
 }

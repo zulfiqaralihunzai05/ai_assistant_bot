@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../controller/image_controller.dart';
+import '../../controller/native_ad_controller.dart';
+import '../../helper/ad_helper.dart';
 import '../../helper/global.dart';
 import '../../widget/custom_btn.dart';
 import '../../widget/custom_loading.dart';
@@ -17,127 +20,144 @@ class ImageFeature extends StatefulWidget {
 
 class _ImageFeatureState extends State<ImageFeature> {
   final _c = ImageController();
+  final _adController = NativeAdController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //app bar
-      appBar: AppBar(
-        title: const Text('AI Image Creator'),
+    _adController.ad = AdHelper.loadNativeAdSmall(addController: _adController);
+    return Obx(() =>
+        Scaffold(
+        //app bar
+        appBar: AppBar(
+          title: const Text('AI Image Creator'),
 
-        //share btn
-        actions: [
-          Obx(
-            () => _c.status.value == Status.complete
-                ? IconButton(
-                    padding: const EdgeInsets.only(right: 6),
-                    onPressed: _c.shareImage,
-                    icon: const Icon(Icons.share))
-                : const SizedBox(),
-          )
-        ],
-      ),
-
-      // //download btn
-      floatingActionButton: Obx(() => _c.status.value == Status.complete
-          ? Padding(
-              padding: const EdgeInsets.only(right: 6, bottom: 6),
-              child: FloatingActionButton(
-                onPressed: _c.downloadImage,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: const Icon(Icons.save_alt_rounded, size: 26),
-              ),
+          //share btn
+          actions: [
+            Obx(
+                  () =>
+              _c.status.value == Status.complete
+                  ? IconButton(
+                  padding: const EdgeInsets.only(right: 6),
+                  onPressed: _c.shareImage,
+                  icon: const Icon(Icons.share))
+                  : const SizedBox(),
             )
-          : const SizedBox()),
+          ],
+        ),
 
-      // //body
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.only(
-            top: mq.height * .02,
-            bottom: mq.height * .1,
-            left: mq.width * .04,
-            right: mq.width * .04),
-        children: [
-          //text field
-          TextFormField(
-            controller: _c.textC,
-            textAlign: TextAlign.center,
-            minLines: 2,
-            maxLines: null,
-            onTapOutside: (e) => FocusScope.of(context).unfocus(),
-            decoration: const InputDecoration(
-                hintText:
-                    'Imagine something wonderful & innovative\nType here & I will create for you..',
-                hintStyle: TextStyle(fontSize: 13.5),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)))),
+        bottomNavigationBar: _adController.ad != null &&
+            _adController.adLoaded.isTrue
+            ? SafeArea(
+            child:
+            SizedBox(height: 80, child: AdWidget(ad: _adController.ad!)))
+            : null,
+
+        // //download btn
+        floatingActionButton: Obx(() =>
+        _c.status.value == Status.complete
+            ? Padding(
+          padding: const EdgeInsets.only(right: 6, bottom: 6),
+          child: FloatingActionButton(
+            onPressed: _c.downloadImage,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15))),
+            child: const Icon(Icons.save_alt_rounded, size: 26),
           ),
+        )
+            : const SizedBox()),
 
-      //     //ai image
-          Container(
-              height: mq.height * .35,
-              margin: EdgeInsets.symmetric(vertical: mq.height * .0),
-              alignment: Alignment.center,
-              child: Obx(() => _aiImage())),
+        // //body
+        body: ListView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.only(
+              top: mq.height * .02,
+              bottom: mq.height * .1,
+              left: mq.width * .04,
+              right: mq.width * .04),
+          children: [
+            //text field
+            TextFormField(
+              controller: _c.textC,
+              textAlign: TextAlign.center,
+              minLines: 2,
+              maxLines: null,
+              onTapOutside: (e) => FocusScope.of(context).unfocus(),
+              decoration: const InputDecoration(
+                  hintText:
+                  'Imagine something wonderful & innovative\nType here & I will create for you..',
+                  hintStyle: TextStyle(fontSize: 13.5),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)))),
+            ),
 
-          Obx(() => _c.imageList.isEmpty
-              ? const SizedBox()
-              : SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.only(bottom: mq.height * .03),
-                  physics: const BouncingScrollPhysics(),
-                  child: Wrap(
-                    spacing: 10,
-                    children: _c.imageList
-                        .map((e) => InkWell(
-                              onTap: () {
-                                _c.url.value = e;
-                              },
-                              child: ClipRRect(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                child: CachedNetworkImage(
-                                  imageUrl: e,
-                                  height: 100,
-                                  errorWidget: (context, url, error) =>
-                                      const SizedBox(),
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                )),
+            //     //ai image
+            Container(
+                height: mq.height * .35,
+                margin: EdgeInsets.symmetric(vertical: mq.height * .0),
+                alignment: Alignment.center,
+                child: Obx(() => _aiImage())),
 
-          //create btn
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Obx(() =>
+            _c.imageList.isEmpty
+                ? const SizedBox()
+                : SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.only(bottom: mq.height * .03),
+              physics: const BouncingScrollPhysics(),
+              child: Wrap(
+                spacing: 10,
+                children: _c.imageList
+                    .map((e) =>
+                    InkWell(
+                      onTap: () {
+                        _c.url.value = e;
+                      },
+                      child: ClipRRect(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(8)),
+                        child: CachedNetworkImage(
+                          imageUrl: e,
+                          height: 100,
+                          errorWidget: (context, url, error) =>
+                          const SizedBox(),
+                        ),
+                      ),
+                    ))
+                    .toList(),
+              ),
+            )),
 
-            children: [
-              CustomBtn(onTap: _c.searchAiImage, text: 'Create with AI'),
-              const SizedBox(height: 5,),
-              CustomBtn(onTap:_c.createAIImage, text: 'Search with AI'),
+            //create btn
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-            ],
-          )
+              children: [
+                CustomBtn(onTap: _c.searchAiImage, text: 'Create with AI'),
+                const SizedBox(height: 5,),
+                CustomBtn(onTap: _c.createAIImage, text: 'Search with AI'),
 
-        ],
-      ),
-    );
+              ],
+            )
+
+          ],
+        ),
+      ));
   }
 
-Widget _aiImage() => ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(10)),
-      child: switch (_c.status.value) {
-        Status.none =>
-          Lottie.asset('assets/lottie/ai_play.json', height: mq.height * .3),
-        Status.complete => CachedNetworkImage(
-            imageUrl: _c.url.value,
-            placeholder: (context, url) => const CustomLoading(),
-            errorWidget: (context, url, error) => const SizedBox(),
-          ),
-        Status.loading => const CustomLoading()
-      },
-    );
+  Widget _aiImage() =>
+      ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        child: switch (_c.status.value) {
+          Status.none =>
+              Lottie.asset(
+                  'assets/lottie/ai_play.json', height: mq.height * .3),
+          Status.complete =>
+              CachedNetworkImage(
+                imageUrl: _c.url.value,
+                placeholder: (context, url) => const CustomLoading(),
+                errorWidget: (context, url, error) => const SizedBox(),
+              ),
+          Status.loading => const CustomLoading()
+        },
+      );
 }

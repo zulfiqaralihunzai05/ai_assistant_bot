@@ -9,5 +9,4 @@ late Size mq;
 
 //chat gpt api key (Updated it)
 String apiKey = '';
-String apiKeyBg = 'RT9Y7rxZE14AXZrNx9VSZ1tB';
-
+String apiKeyBg = '';

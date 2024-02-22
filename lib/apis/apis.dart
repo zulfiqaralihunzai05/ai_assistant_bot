@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 class APIs {
   //get answer from chat gpt
 
-  static const defaultApiKey = "zMB7aJGLXLXedm6TrjRMu4H7";
+  static const defaultApiKey = "";//zMB7aJGLXLXedm6TrjRMu4H7
 
   static const baseUrl = "https://api.remove.bg/v1.0";
   static const removeBgUrl = '$baseUrl/removebg';
@@ -21,7 +21,7 @@ class APIs {
         "POST", Uri.parse("https://api.remove.bg/v1.0/removebg"));
     request.files
         .add(await http.MultipartFile.fromPath("image_file", imagePath));
-    request.headers.addAll({"X-API-Key": "PnrkZXdhFCUe42nqb2xQvsgM"}); //Put Your API key HERE
+    request.headers.addAll({"X-API-Key": apiKeyBg});
     final response = await request.send();
     if (response.statusCode == 200) {
       http.Response imgRes = await http.Response.fromStream(response);
@@ -58,7 +58,7 @@ class APIs {
       //log('res: $data');
       return data['choices'][0]['message']['content'];
     } catch (e) {
-      log('getAnswerE: $e');
+     // log('getAnswerE: $e');
       return 'Something went wrong (Try again in sometime)';
     }
   }
@@ -73,7 +73,7 @@ class APIs {
       //
       return List.from(data['images']).map((e) => e['src'].toString()).toList();
     } catch (e) {
-      log('searchAiImagesE: $e');
+    // log('searchAiImagesE: $e');
       return [];
     }
   }
@@ -84,7 +84,7 @@ class APIs {
 
       return res.text;
     } catch (e) {
-      log('googleTranslateE: $e ');
+     // log('googleTranslateE: $e ');
       return 'Something went wrong!';
     }
   }

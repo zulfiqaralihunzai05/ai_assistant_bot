@@ -1,8 +1,8 @@
+
+import 'package:ai_assistant_bot/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
-
-import '../helper/ad_helper.dart';
 import '../helper/global.dart';
 import '../model/home_type.dart';
 
@@ -16,16 +16,16 @@ class HomeCard extends StatelessWidget {
     Animate.restartOnHotReload = true;
 
     return Card(
-        color: Colors.blue.withOpacity(.2),
+        color: TColors.cardBackground,
         elevation: 0,
         margin: EdgeInsets.only(bottom: mq.height * .02),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20))),
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(20)),
-          //for ads
-          // onTap: () => AdHelper.showInterstitialAd(homeType.onTap),
-          onTap: () => AdHelper.showInterstitialAd(homeType.onTap),
+
+          onTap:  homeType.onTap,
+
           child: homeType.leftAlign
               ? Row(
                   children: [
@@ -43,6 +43,7 @@ class HomeCard extends StatelessWidget {
                       homeType.title,
                       style: const TextStyle(
                           fontSize: 16,
+                          color: Colors.black,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1),
                     ),
@@ -59,6 +60,7 @@ class HomeCard extends StatelessWidget {
                       homeType.title,
                       style: const TextStyle(
                           fontSize: 18,
+                          color: Colors.black,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1),
                     ),

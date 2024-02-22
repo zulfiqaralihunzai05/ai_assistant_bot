@@ -6,15 +6,15 @@ import 'package:ai_assistant_bot/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+
 Future<void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
 
   AppWrite.init();
 
-  AdHelper.init();
-
   Pref.initialize();
+  await AdHelper.initAds();
 
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   await SystemChrome.setPreferredOrientations(

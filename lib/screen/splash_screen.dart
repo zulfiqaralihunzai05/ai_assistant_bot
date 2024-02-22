@@ -2,7 +2,6 @@ import 'package:ai_assistant_bot/helper/pref.dart';
 import 'package:ai_assistant_bot/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../helper/global.dart';
 import '../widget/custom_loading.dart';
@@ -52,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Padding(
                 padding: EdgeInsets.all(mq.width * .05),
                 child:
-                    Image.asset('assets/images/logo.png', width: mq.width * .4),
+                    Image.asset('assets/images/app_icon.png', width: mq.width * .4),
               ),
             ),
 

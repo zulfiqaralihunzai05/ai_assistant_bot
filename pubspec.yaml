@@ -42,20 +42,19 @@ dependencies:
   # For Sharing Image
   share_plus: ^7.2.1
 
-  # Facebook Ads
-  easy_audience_network: ^0.0.6
-
-
   cupertino_icons: ^1.0.2
   image_picker: ^0.8.5+3
   screenshot: ^2.1.0
   permission_handler: ^8.1.6
 
+  google_mobile_ads: ^4.0.0
 
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
   flutter_lints: ^2.0.0
 

@@ -1,79 +1,91 @@
 import 'dart:developer';
 
-import 'package:easy_audience_network/easy_audience_network.dart';
+import 'package:ai_assistant_bot/helper/my_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'my_dialog.dart';
+import '../controller/native_ad_controller.dart';
 
 class AdHelper {
-  static void init() {
-    EasyAudienceNetwork.init(
-      testMode:
-          true, // for testing purpose but comment it before making the app live
-    );
+  // for initializing ads sdk
+  static Future<void> initAds() async {
+    await MobileAds.instance.initialize();
   }
 
-  static void showInterstitialAd(VoidCallback onComplete) {
-    //show loading
-    MyDialog.showLoadingDialog();
 
-    final interstitialAd = InterstitialAd(InterstitialAd.testPlacementId);
 
-    interstitialAd.listener = InterstitialAdListener(onLoaded: () {
-      //hide loading
-      Get.back();
-      onComplete();
+  static showLoadInterstitialAd({required VoidCallback onComplete}) {
+    MyDialog.showProgress();
 
-      interstitialAd.show();
-    }, onDismissed: () {
-      interstitialAd.destroy();
-    }, onError: (i, e) {
-      //hide loading
-      Get.back();
-      onComplete();
-
-      log('interstitial error: $e');
-    });
-
-    interstitialAd.load();
-  }
-
-  static Widget nativeAd() {
-    return SafeArea(
-      child: NativeAd(
-        placementId: NativeAd.testPlacementId,
-        adType: NativeAdType.NATIVE_AD,
-        keepExpandedWhileLoading: false,
-        expandAnimationDuraion: 1000,
-        listener: NativeAdListener(
-          onError: (code, message) => log('error'),
-          onLoaded: () => log('loaded'),
-          onClicked: () => log('clicked'),
-          onLoggingImpression: () => log('logging impression'),
-          onMediaDownloaded: () => log('media downloaded'),
-        ),
+    InterstitialAd.load(
+       adUnitId: 'ca-app-pub-8833838626334586/6974708479',//original Ads
+      //adUnitId: 'ca-app-pub-3940256099942544/1033173712',//
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              onComplete();
+            },
+          );
+          ad.show();
+          Get.back();
+        },
+        onAdFailedToLoad: (err) {
+          Get.back();
+          log('Failed to load an interstitial ad: ${err.message}');
+          onComplete();
+        },
       ),
     );
   }
 
-  static Widget nativeBannerAd() {
-    return SafeArea(
-      child: NativeAd(
-        placementId: NativeAd.testPlacementId,
-        adType: NativeAdType.NATIVE_BANNER_AD,
-        bannerAdSize: NativeBannerAdSize.HEIGHT_100,
-        keepExpandedWhileLoading: false,
-        height: 100,
-        expandAnimationDuraion: 1000,
+  static NativeAd loadNativeAd({required NativeAdController addController}) {
+    return NativeAd(
+       adUnitId: 'ca-app-pub-8833838626334586/5234514728',
+       // adUnitId: 'ca-app-pub-3940256099942544/2247696110',
         listener: NativeAdListener(
-          onError: (code, message) => log('error'),
-          onLoaded: () => log('loaded'),
-          onClicked: () => log('clicked'),
-          onLoggingImpression: () => log('logging impression'),
-          onMediaDownloaded: () => log('media downloaded'),
+          onAdLoaded: (ad) {
+            log('$NativeAd loaded.');
+            log('Native Ad Id: $NativeAd');
+            addController.adLoaded.value = true;
+          },
+          onAdFailedToLoad: (ad, error) {
+            // Dispose the ad here to free resources.
+            log('$NativeAd failed to load: $error');
+            ad.dispose();
+          },
         ),
-      ),
-    );
+        request: const AdRequest(),
+        nativeTemplateStyle:
+            NativeTemplateStyle(templateType: TemplateType.medium))
+      ..load();
   }
+
+  static NativeAd loadNativeAdSmall({required NativeAdController addController}) {
+    return NativeAd(
+        adUnitId: 'ca-app-pub-8833838626334586/5234514728',
+        //adUnitId: 'ca-app-pub-3940256099942544/2247696110',
+        listener: NativeAdListener(
+          onAdLoaded: (ad) {
+            log('$NativeAd loaded.');
+            log('Native Ad Id: $NativeAd');
+            addController.adLoaded.value = true;
+          },
+          onAdFailedToLoad: (ad, error) {
+            // Dispose the ad here to free resources.
+            log('$NativeAd failed to load: $error');
+            ad.dispose();
+          },
+        ),
+        request: const AdRequest(),
+        nativeTemplateStyle:
+        NativeTemplateStyle(templateType: TemplateType.small))
+      ..load();
+  }
+
+
+
 }
