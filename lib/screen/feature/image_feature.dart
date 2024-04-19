@@ -1,13 +1,18 @@
+import 'dart:developer';
+
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../controller/image_controller.dart';
 import '../../controller/native_ad_controller.dart';
 import '../../helper/ad_helper.dart';
 import '../../helper/global.dart';
+import '../../utils/colors.dart';
 import '../../widget/custom_btn.dart';
 import '../../widget/custom_loading.dart';
 
@@ -19,6 +24,9 @@ class ImageFeature extends StatefulWidget {
 }
 
 class _ImageFeatureState extends State<ImageFeature> {
+  SpeechToText speechToText = SpeechToText();
+  var text = "Hold the button and start speaking";
+  var isListening = false;
   final _c = ImageController();
   final _adController = NativeAdController();
 
@@ -128,16 +136,73 @@ class _ImageFeatureState extends State<ImageFeature> {
             )),
 
             //create btn
+
+
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
               children: [
-                CustomBtn(onTap: _c.searchAiImage, text: 'Create with AI'),
-                const SizedBox(height: 5,),
-                CustomBtn(onTap: _c.createAIImage, text: 'Search with AI'),
+                CustomBtn(onTap: _c.searchAiImage, text: 'Google '),
+                const SizedBox(width: 2,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    AvatarGlow(
+                      duration: const Duration(milliseconds: 2000),
+                      glowColor: bgColor,
+                      repeat: true,
+                      glowShape: BoxShape.circle,
+                      animate:isListening,
+                      curve: Curves.fastOutSlowIn,
+                      child: GestureDetector(
+                        onTapDown: (details) async{
+                          if(!isListening) {
+                            var available = await speechToText.initialize();
+                            if(available){
+                              setState(() {
+                                isListening = true;
+                                speechToText.listen(
+                                    onResult: (result){
+                                      setState(() {
+                                        // _voidController.textB.text = text;
+
+                                        text = result.recognizedWords;
+                                        log('Voice : $text');
+                                      });
+                                    }
+                                );
+
+                              });
+                            }
+                          }
+                        },
+
+                        onTapUp: (details){
+                          setState(() {
+                            isListening = false;
+                          });
+                          speechToText.stop();
+
+                        },
+
+                        child: CircleAvatar(
+                          backgroundColor: bgColor,
+                          radius: 25,
+                          child: Icon(isListening ? Icons.mic : Icons.mic_none, color: Colors.white,),
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+                const SizedBox(width: 2,),
+                CustomBtn(onTap: _c.createAIImage, text: 'AI'),
 
               ],
-            )
+            ),
+
+
+
 
           ],
         ),

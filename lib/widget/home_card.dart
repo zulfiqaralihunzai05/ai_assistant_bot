@@ -43,7 +43,7 @@ class HomeCard extends StatelessWidget {
                       homeType.title,
                       style: const TextStyle(
                           fontSize: 16,
-                          color: Colors.black,
+                          color: Colors.white,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1),
                     ),
@@ -60,7 +60,7 @@ class HomeCard extends StatelessWidget {
                       homeType.title,
                       style: const TextStyle(
                           fontSize: 18,
-                          color: Colors.black,
+                          color: Colors.white,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1),
                     ),

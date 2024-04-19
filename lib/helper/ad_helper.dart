@@ -14,14 +14,12 @@ class AdHelper {
     await MobileAds.instance.initialize();
   }
 
-
-
   static showLoadInterstitialAd({required VoidCallback onComplete}) {
     MyDialog.showProgress();
 
     InterstitialAd.load(
-       adUnitId: 'ca-app-pub-8833838626334586/6974708479',//original Ads
-      //adUnitId: 'ca-app-pub-3940256099942544/1033173712',//
+      adUnitId: 'ca-app-pub-8833838626334586/6974708479',//original Ads
+      // adUnitId: 'ca-app-pub-3940256099942544/1033173712..', // test IDs
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
@@ -44,8 +42,8 @@ class AdHelper {
 
   static NativeAd loadNativeAd({required NativeAdController addController}) {
     return NativeAd(
-       adUnitId: 'ca-app-pub-8833838626334586/5234514728',
-       // adUnitId: 'ca-app-pub-3940256099942544/2247696110',
+        adUnitId: 'ca-app-pub-8833838626334586/5234514728', // Original Ads ID
+        //adUnitId: 'ca-app-pub-3940256099942544/2247696110..', // Test IDs
         listener: NativeAdListener(
           onAdLoaded: (ad) {
             log('$NativeAd loaded.');
@@ -64,10 +62,11 @@ class AdHelper {
       ..load();
   }
 
-  static NativeAd loadNativeAdSmall({required NativeAdController addController}) {
+  static NativeAd loadNativeAdSmall(
+      {required NativeAdController addController}) {
     return NativeAd(
-        adUnitId: 'ca-app-pub-8833838626334586/5234514728',
-        //adUnitId: 'ca-app-pub-3940256099942544/2247696110',
+        adUnitId: 'ca-app-pub-8833838626334586/5234514728', // Original IDs
+        // adUnitId: 'ca-app-pub-3940256099942544/2247696110..', // Test IDs
         listener: NativeAdListener(
           onAdLoaded: (ad) {
             log('$NativeAd loaded.');
@@ -82,10 +81,7 @@ class AdHelper {
         ),
         request: const AdRequest(),
         nativeTemplateStyle:
-        NativeTemplateStyle(templateType: TemplateType.small))
+            NativeTemplateStyle(templateType: TemplateType.small))
       ..load();
   }
-
-
-
 }

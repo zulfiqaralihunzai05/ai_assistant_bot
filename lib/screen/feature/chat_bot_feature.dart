@@ -1,12 +1,14 @@
+import 'dart:developer';
+
 import 'package:ai_assistant_bot/main.dart';
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../controller/chat_controller.dart';
-import '../../controller/native_ad_controller.dart';
-import '../../helper/ad_helper.dart';
 import '../../helper/global.dart';
+import '../../utils/colors.dart';
 import '../../widget/message_card.dart';
 
 class ChatBotFeature extends StatefulWidget {
@@ -18,23 +20,24 @@ class ChatBotFeature extends StatefulWidget {
 
 class _ChatBotFeatureState extends State<ChatBotFeature> {
   final _c = ChatController();
-  final _adController = NativeAdController();
+  // final _adController = NativeAdController();
+  final _voidController = ChatController();
+  final _messageController = TextEditingController();
+
+  SpeechToText speechToText = SpeechToText();
+
+  var text = "";
+  var isListening = false;
+
 
   @override
   Widget build(BuildContext context) {
-    _adController.ad = AdHelper.loadNativeAdSmall(addController: _adController);
-    return Obx(() =>
-      Scaffold(
+   // _adController.ad = AdHelper.loadNativeAdSmall(addController: _adController);
+    return Scaffold(
         //app bar
         appBar: AppBar(
           title: const Text('Chat with AI Bot'),
         ),
-        bottomNavigationBar: _adController.ad != null &&
-            _adController.adLoaded.isTrue
-            ? SafeArea(
-            child:
-            SizedBox(height: 80, child: AdWidget(ad: _adController.ad!)))
-            : null,
 
         //send message field & btn
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -43,9 +46,57 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
           child: Row(
               children: [
                 //text input field
+                AvatarGlow(
+                  duration: const Duration(milliseconds: 2000),
+                  glowColor: bgColor,
+                  repeat: true,
+                  glowShape: BoxShape.circle,
+                  animate:isListening,
+                  curve: Curves.fastOutSlowIn,
+                  child: GestureDetector(
+                    onTapDown: (details) async{
+                      if(!isListening) {
+                        var available = await speechToText.initialize();
+                        if(available){
+                          setState(() {
+                            isListening = true;
+                            speechToText.listen(
+                                onResult: (result){
+                                  setState(() {
+                                    // _voidController.textB.text = text;
+                                     _voidController.textB.text = text;
+                                     text = result.recognizedWords;
+                                    log('Voice : $text');
+                                  });
+                                }
+                            );
+
+                          });
+                        }
+                      }
+                    },
+
+                    onTapUp: (details){
+                      setState(() {
+                        isListening = false;
+                      });
+                      speechToText.stop();
+
+                    },
+
+                    child: CircleAvatar(
+                      backgroundColor: bgColor,
+                      radius: 24,
+                      child: Icon(isListening ? Icons.mic : Icons.mic_none, color: Colors.white,),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 8),
+
                 Expanded(
                     child: TextFormField(
-                      controller: _c.textC,
+                      controller: _c.textC ,
                       textAlign: TextAlign.center,
                       onTapOutside: (e) => FocusScope.of(context).unfocus(),
                       decoration: InputDecoration(
@@ -75,7 +126,10 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                     icon: const Icon(Icons.rocket_launch_rounded,
                         color: Colors.white, size: 28),
                   ),
-                )
+                ),
+
+                //Add New Feature for new Update Text to Speech
+
               ]),
         ),
 
@@ -90,7 +144,7 @@ class _ChatBotFeatureState extends State<ChatBotFeature> {
                 children: _c.list.map((e) => MessageCard(message: e)).toList(),
               ),
         ),
-      )
-    );
+      );
+
   }
 }

@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
       //         ? const OnboardingScreen()
       //         : const HomeScreen()));
       Get.off(() =>
-          Pref.showOnboarding ? const OnboardingScreen() : const HomeScreen());
+          Pref.showOnboarding ? const OnboardingScreen() : HomeScreen());
     });
   }
 
@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Padding(
                 padding: EdgeInsets.all(mq.width * .05),
                 child:
-                    Image.asset('assets/images/app_icon.png', width: mq.width * .4),
+                    Image.asset('assets/images/logo.png', width: mq.width * .4),
               ),
             ),
 

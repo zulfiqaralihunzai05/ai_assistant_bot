@@ -19,8 +19,8 @@ class CustomBtn extends StatelessWidget {
               elevation: 0,
               backgroundColor: Theme.of(context).buttonColor,
               textStyle:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              minimumSize: Size(mq.width * .4, 50)),
+                  const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+              minimumSize: Size(mq.width * .34, 50)),
           onPressed: onTap,
           child: Text(text, style: const TextStyle(color: Colors.white),)),
     );
